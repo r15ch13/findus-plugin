@@ -1,21 +1,22 @@
-
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>(window.google && window.google.maps) || document.write('<script src="//maps.google.com/maps/api/js?sensor=false"><\/script>')</script>
 <div class="container">
 	<div class="row">
 	{% if map_template == 'map_only' %}
 		{% partial "@largemap" %}
 	{% elseif map_template == 'map_info_right' %}
-		<div class="col-xs-12 col-md-8">
+		<div class="col-xs-12 col-md-8 findus-left">
 			{% partial "@largemap" %}
 		</div>
-		<div class="col-xs-12 col-md-4">
+		<div class="col-xs-12 col-md-4 findus-right">
 			<p>{{ location_title }}</p>
 			<p>{{ address1 }}</p>
 			<p>{{ city }}, {{ state_zip }}</p>
-			{% partial "@popup" %}
 		</div>
 	{% elseif map_template == 'info_small_map' %}
-		{% partial "@smallmap" %}
+		{% set zoom = 11 %}
+		{% set width = 140 %}
+		{% set height = 100 %}
+		<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ lat }},{{ lon }}&zoom={{ zoom }}&format=png&sensor=false&size={{ width }}x{{ height }}&maptype=roadmap&style=gamma:1|hue:{{ color }}{% if color == 'black' %}|invert_lightness:true{% endif %}|saturation:-100" class="smallmap img-polaroid"/>
 		<p>{{ location_title }}</p>
 		<p>{{ address1 }}</p>
 		<p>{{ city }}, {{ state_zip }}</p>
@@ -23,5 +24,102 @@
 	{% elseif map_template == 'link_only' %}
 		{% partial "@popup" %}
 	{% endif %}
-		</div>
+	</div>
 </div>
+
+{% put scripts %}
+<script type="text/javascript">
+// The Google Map
+$(document).ready(function() {
+
+	var findus = document.getElementsByClassName('findus-map');
+	var maps = [];
+
+	for (var i = 0; i < findus.length; i++)
+	{
+		var element = findus[i];
+		var data = findus[i].dataset;
+
+		if($(element).hasClass('findus-popup')) {
+			$(element).hide();
+		}
+
+		// Set the map styles
+		var stylers = [
+			{ "gamma": 1.61 },
+			{ "lightness": -7 },
+			{ "hue": data.color },
+		];
+
+		if(data.color == 'black' || data.color == 'grey') {
+			stylers.push({ "saturation": -100 });
+		}
+		if(data.color == '#ff6e00') {
+			stylers.push({ "saturation": -64 });
+		}
+		if(data.color == 'black') {
+			stylers.push({ "invert_lightness": true });
+		}
+
+		// Set the options to be used when creating the map
+		var myOptions = {
+			zoom: 0,
+			center: new google.maps.LatLng(data.lat, data.lon),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
+		var infowindow = new google.maps.InfoWindow();
+		var mapL = new google.maps.Map(element, myOptions);
+
+		// for later use with show-findus
+		maps[$(element).attr('id')] = mapL;
+
+		var locations = [
+			[data.address, data.lat, data.lon, 1]
+		];
+
+		for (var j = 0; j < locations.length; j++)
+		{
+			var location = locations[j];
+			var myLatLng = new google.maps.LatLng(location[1], location[2]);
+			var marker = new google.maps.Marker({
+				position: myLatLng,
+				map: mapL,
+				title: location[0],
+				zIndex: location[3]
+			});
+
+			google.maps.event.addListener(marker, 'click', (function(marker, j) {
+				return function() {
+					infowindow.setContent('<h4>'+locations[j][0]+'</h4><a href="http://maps.google.com/maps?daddr='+location[1]+','+location[2]+'" target="_blank" style="color: black!important;">{{ link_text_marker }}</a>');
+					infowindow.open(mapL, marker);
+				}
+			})(marker, j));
+		};
+
+		mapL.setOptions({styles: [
+			{ "stylers": stylers }
+		]});
+
+		// Create a new latlng based on the latitude and longitude from the user's position
+		mapL.setCenter(new google.maps.LatLng(data.lat, data.lon));
+		mapL.setZoom(12);
+		google.maps.event.trigger(mapL, "resize");
+	};
+
+	$('.show-findus').each(function(){
+		$(this).fancybox({
+			afterShow: function(){
+				var mapL = maps[$(this).attr('href').substr(1)];
+				if(mapL) {
+					var currCenter = mapL.getCenter();
+					google.maps.event.trigger(mapL, "resize");
+					mapL.setCenter(currCenter);
+				}
+			},
+		});
+	});
+
+});
+</script>
+{% endput %}

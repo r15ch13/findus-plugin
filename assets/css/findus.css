@@ -1,14 +1,13 @@
-.map {
-  width: 500px;
-  height: 380px;
-}
-#largemap {
+.findus-large {
   width: 100%;
   height: 380px;
 }
-#map img,
-#largemap img {
+.findus-large img {
   max-width: none;
+}
+.findus-popup {
+  width: 500px;
+  height: 380px;
 }
 .img-polaroid {
   float: left;
@@ -18,4 +17,7 @@
 h3.awesome_heading span {
   margin-right: 19px;
   padding-top: 11px;
+}
+.show-findus {
+  font-weight: bold;
 }
