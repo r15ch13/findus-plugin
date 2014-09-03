@@ -1,4 +1,3 @@
-<script>(window.google && window.google.maps) || document.write('<script src="//maps.google.com/maps/api/js?sensor=false"><\/script>')</script>
 <div class="container">
 	<div class="row">
 	{% if map_template == 'map_only' %}
@@ -28,6 +27,7 @@
 </div>
 
 {% put scripts %}
+<script>(window.google && window.google.maps) || document.write('<script src="//maps.google.com/maps/api/js?sensor=false"><\/script>')</script>
 <script type="text/javascript">
 // The Google Map
 $(document).ready(function() {
