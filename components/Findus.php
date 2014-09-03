@@ -8,6 +8,61 @@ use Lang;
 class Findus extends ComponentBase
 {
 
+    /**
+     * @var string
+     */
+    public $map_template;
+
+    /**
+     * @var string
+     */
+    public $address;
+
+    /**
+     * @var string
+     */
+    public $location_title;
+
+    /**
+     * @var string
+     */
+    public $address1;
+
+    /**
+     * @var string
+     */
+    public $city;
+
+    /**
+     * @var string
+     */
+    public $state_zip;
+
+    /**
+     * @var string
+     */
+    public $link_text;
+
+    /**
+     * @var string
+     */
+    public $link_text_marker;
+
+    /**
+     * @var string
+     */
+    public $color;
+
+    /**
+     * @var string
+     */
+    public $lat;
+
+    /**
+     * @var string
+     */
+    public $lon;
+
     public function componentDetails()
     {
         return [
@@ -70,13 +125,9 @@ class Findus extends ComponentBase
 
         $this->addCss('/plugins/radiantweb/findus/assets/fancybox/jquery.fancybox.css');
         $this->addJs('/plugins/radiantweb/findus/assets/fancybox/jquery.fancybox.pack.js');
-    }
 
-    public function onRender()
-    {
-        $this->page['map_template'] = $this->property('template');
+        $this->map_template = $this->property('template');
 
-        //Cache::forget('findus_latlon_'.$this->page->id.$this->alias);
         $findus_latlon = Cache::get('findus_latlon_'.$this->page->id.$this->alias);
         $findus_address = Cache::get('findus_address_'.$this->page->id.$this->alias);
         $findus_formatted_address = Cache::get('findus_formatted_address_'.$this->page->id.$this->alias);
@@ -87,17 +138,17 @@ class Findus extends ComponentBase
             $findus_formatted_address = $coords['formatted'];
             Cache::forever('findus_latlon_'.$this->page->id.$this->alias, $findus_latlon);
             Cache::forever('findus_address_'.$this->page->id.$this->alias, $this->property('address'));
-            Cache::forever('findus_formatted_address_'.$this->page->id.$this->alias, $coords['formatted']);
+            Cache::forever('findus_formatted_address_'.$this->page->id.$this->alias, $findus_formatted_address);
         }
 
         $coords = explode(',', $findus_latlon);
-        $this->page['address'] = $this->property('address');
-        $this->page['location_title'] = $this->property('location_title');
+        $this->address = $this->property('address');
+        $this->location_title = $this->property('location_title');
 
         $address_array = explode(',', $findus_formatted_address);
-        $this->page['address1'] = isset($address_array[0]) ? $address_array[0] : '';
-        $this->page['city'] = isset($address_array[1]) ? $address_array[1] : '';
-        $this->page['state_zip'] = isset($address_array[2]) ? $address_array[2] : '';
+        $this->address1 = isset($address_array[0]) ? $address_array[0] : '';
+        $this->city = isset($address_array[1]) ? $address_array[1] : '';
+        $this->state_zip = isset($address_array[2]) ? $address_array[2] : '';
 
         $colors = array(
             'none'=>'none',
@@ -111,12 +162,12 @@ class Findus extends ComponentBase
             'grey'=>'grey'
         );
 
-        $this->page['link_text'] = Lang::get('radiantweb.findus::lang.link_text');
-        $this->page['link_text_marker'] = Lang::get('radiantweb.findus::lang.link_text_marker');
+        $this->link_text = Lang::get('radiantweb.findus::lang.link_text');
+        $this->link_text_marker = Lang::get('radiantweb.findus::lang.link_text_marker');
 
-        $this->page['color'] = $colors[strtolower($this->property('color'))];
-        $this->page['lat'] = $coords[0];
-        $this->page['lon'] = $coords[1];
+        $this->color = $colors[strtolower($this->property('color'))];
+        $this->lat = $coords[0];
+        $this->lon = $coords[1];
     }
 
     private function getGeoCode($address)

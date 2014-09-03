@@ -1,27 +1,24 @@
 <div class="container">
 	<div class="row">
-	{% if map_template == 'map_only' %}
-		{% partial "@largemap" %}
-	{% elseif map_template == 'map_info_right' %}
+	{% if __SELF__.map_template == 'map_only' %}
+		{% partial __SELF__ ~ "::largemap" %}
+	{% elseif __SELF__.map_template == 'map_info_right' %}
 		<div class="col-xs-12 col-md-8 findus-left">
-			{% partial "@largemap" %}
+			{% partial __SELF__ ~ "::largemap" %}
 		</div>
 		<div class="col-xs-12 col-md-4 findus-right">
-			<p>{{ location_title }}</p>
-			<p>{{ address1 }}</p>
-			<p>{{ city }}, {{ state_zip }}</p>
+			<p>{{ __SELF__.location_title }}</p>
+			<p>{{ __SELF__.address1 }}</p>
+			<p>{{ __SELF__.city }}, {{ __SELF__.state_zip }}</p>
 		</div>
-	{% elseif map_template == 'info_small_map' %}
-		{% set zoom = 11 %}
-		{% set width = 140 %}
-		{% set height = 100 %}
-		<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ lat }},{{ lon }}&zoom={{ zoom }}&format=png&sensor=false&size={{ width }}x{{ height }}&maptype=roadmap&style=gamma:1|hue:{{ color }}{% if color == 'black' %}|invert_lightness:true{% endif %}|saturation:-100" class="smallmap img-polaroid"/>
-		<p>{{ location_title }}</p>
-		<p>{{ address1 }}</p>
-		<p>{{ city }}, {{ state_zip }}</p>
-		{% partial "@popup" %}
-	{% elseif map_template == 'link_only' %}
-		{% partial "@popup" %}
+	{% elseif __SELF__.map_template == 'info_small_map' %}
+		{% partial __SELF__ ~ "::smallmap" %}
+		<p>{{ __SELF__.location_title }}</p>
+		<p>{{ __SELF__.address1 }}</p>
+		<p>{{ __SELF__.city }}, {{ __SELF__.state_zip }}</p>
+		{% partial __SELF__ ~ "::popup" %}
+	{% elseif __SELF__.map_template == 'link_only' %}
+		{% partial __SELF__ ~ "::popup" %}
 	{% endif %}
 	</div>
 </div>

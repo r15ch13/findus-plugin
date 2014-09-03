@@ -1,2 +1,2 @@
-<p><a href="#{{__SELF__.id}}" class="show-findus">{{ link_text|raw }}</a></p>
-<div id="{{__SELF__.id}}" class="findus-map findus-popup" data-lat="{{ lat }}" data-lon="{{ lon }}" data-color="{{ color }}" data-address="{{ address }}" ></div>
+<p><a href="#{{ __SELF__.id }}" class="show-findus">{{ __SELF__.link_text|raw }}</a></p>
+<div id="{{ __SELF__.id }}" class="findus-map findus-popup" data-lat="{{ __SELF__.lat }}" data-lon="{{ __SELF__.lon }}" data-color="{{ __SELF__.color }}" data-address="{{ __SELF__.address }}" data-markertext="{{ __SELF__.link_text_marker }}"></div>
