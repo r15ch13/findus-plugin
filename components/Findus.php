@@ -114,7 +114,19 @@ class Findus extends ComponentBase
                     'brown'  => 'brown',
                     'grey'   => 'grey'
                 ]
-            ]
+            ],
+            'link_text' => [
+                'description' => 'Title of the link to Google Maps',
+                'title'       => 'Link Title',
+                'default'     => '',
+                'type'        => 'string'
+            ],
+            'link_text_marker' => [
+                'description' => 'Title of the link to Google Maps in the marker popup',
+                'title'       => 'Marker Link Title',
+                'default'     => '',
+                'type'        => 'string'
+            ],
         ];
     }
 
@@ -162,8 +174,10 @@ class Findus extends ComponentBase
             'grey'=>'grey'
         );
 
-        $this->link_text = Lang::get('radiantweb.findus::lang.link_text');
-        $this->link_text_marker = Lang::get('radiantweb.findus::lang.link_text_marker');
+        $link_text = trim($this->property('link_text'));
+        $this->link_text = !empty($link_text) ? $link_text : Lang::get('radiantweb.findus::lang.link_text');
+        $link_text_marker = trim($this->property('link_text_marker'));
+        $this->link_text_marker = !empty($link_text_marker) ? $link_text_marker : Lang::get('radiantweb.findus::lang.link_text_marker');
 
         $this->color = $colors[strtolower($this->property('color'))];
         $this->lat = $coords[0];
